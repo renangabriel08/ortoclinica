@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ortoclinica/styles/cores.dart';
-import '../controllers/escolhas_controller.dart';
+import '../controllers/escolhas.dart';
 
 class Agenda extends StatefulWidget {
   const Agenda({super.key});
@@ -24,13 +24,9 @@ class _AgendaState extends State<Agenda> {
     showDialog<String>(
       context: context,
       builder: (BuildContext context) => AlertDialog(
-        content: Container(
+        content: SizedBox(
           width: 335,
           height: 450,
-          decoration: BoxDecoration(
-            color: Cores.branco,
-            borderRadius: BorderRadius.circular(16),
-          ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
@@ -39,12 +35,12 @@ class _AgendaState extends State<Agenda> {
                 height: 156,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(999),
-                  color: Cores.azulClaro,
+                  color: Cores.azul,
                 ),
                 child: Center(
                   child: Icon(
                     Icons.thumb_up,
-                    color: Cores.azul,
+                    color: Cores.branco,
                     size: 70,
                   ),
                 ),
@@ -56,16 +52,17 @@ class _AgendaState extends State<Agenda> {
                     style: TextStyle(
                       fontSize: 35,
                       fontWeight: FontWeight.w400,
-                      color: Cores.tituloPopUp,
+                      color: Cores.cinza,
                     ),
                   ),
                   const SizedBox(height: 4),
                   Text(
                     'Seu agendamento foi confirmado!',
+                    textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: 17,
                       fontWeight: FontWeight.w400,
-                      color: Cores.textoPopUp,
+                      color: Cores.cinza,
                     ),
                   ),
                 ],
@@ -76,7 +73,7 @@ class _AgendaState extends State<Agenda> {
                 style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w400,
-                  color: Cores.textoPopUp,
+                  color: Cores.cinza,
                 ),
                 textAlign: TextAlign.center,
               ),
@@ -86,7 +83,10 @@ class _AgendaState extends State<Agenda> {
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Cores.preto,
-                      fixedSize: const Size(295, 54),
+                      fixedSize: const Size(295, 50),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
                     ),
                     onPressed: () => Navigator.pushNamed(context, '/home'),
                     child: Text(
@@ -105,7 +105,7 @@ class _AgendaState extends State<Agenda> {
                       style: TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.w400,
-                        color: Cores.cinzaTexto,
+                        color: Cores.cinza,
                       ),
                     ),
                   ),
@@ -140,7 +140,7 @@ class _AgendaState extends State<Agenda> {
                         height: 41,
                         decoration: BoxDecoration(
                           border: Border.all(
-                            color: Cores.cinzaLinha,
+                            color: Cores.cinza,
                             width: 1,
                           ),
                           borderRadius: BorderRadius.circular(12),
@@ -149,7 +149,7 @@ class _AgendaState extends State<Agenda> {
                           child: IconButton(
                             icon: Icon(
                               Icons.arrow_back,
-                              color: Cores.cinzaTexto,
+                              color: Cores.cinza,
                               size: 24,
                             ),
                             onPressed: () => Navigator.pushNamed(
@@ -220,7 +220,7 @@ class _AgendaState extends State<Agenda> {
                   Text(
                     'Horários disponíveis',
                     style: TextStyle(
-                      color: Cores.cinzaTexto,
+                      color: Cores.cinza,
                       fontSize: 16,
                       fontWeight: FontWeight.w500,
                     ),
@@ -567,7 +567,7 @@ class _AgendaState extends State<Agenda> {
                   Text(
                     'Lembrete',
                     style: TextStyle(
-                      color: Cores.cinzaTexto,
+                      color: Cores.cinza,
                       fontSize: 16,
                       fontWeight: FontWeight.w500,
                     ),
@@ -911,7 +911,10 @@ class _AgendaState extends State<Agenda> {
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Cores.preto,
-                  fixedSize: Size(widthTela, 64),
+                  fixedSize: Size(widthTela, 50),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
                 ),
                 onPressed: () => popUp(),
                 child: Text(

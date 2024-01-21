@@ -8,7 +8,7 @@ class Linha extends StatelessWidget {
   Widget build(BuildContext context) {
     double widthTela = MediaQuery.of(context).size.width;
     return Container(
-      color: Cores.cinzaLinha,
+      color: Cores.cinza,
       width: widthTela * .3,
       height: 1,
     );

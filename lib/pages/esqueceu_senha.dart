@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ortoclinica/controllers/form.dart';
 import 'package:ortoclinica/styles/cores.dart';
 import 'package:ortoclinica/widgets/card_codigo.dart';
 
@@ -10,23 +11,43 @@ class EsqueceuSenha extends StatefulWidget {
 }
 
 class _EsqueceuSenhaState extends State<EsqueceuSenha> {
+  final _formKey = GlobalKey<FormState>();
+
+  String email = '';
+  String nascimento = 'Data de nascimento';
+
   @override
   Widget build(BuildContext context) {
-    double widthTela = MediaQuery.of(context).size.width;
-    double heightTela = MediaQuery.of(context).size.height;
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
+
+    gerarCalendario() {
+      showDatePicker(
+        context: context,
+        firstDate: DateTime(1900),
+        lastDate: DateTime.now(),
+        initialDate: DateTime.now(),
+      ).then((value) {
+        if (value != null) {
+          nascimento = '${value.year}-${value.month}-${value.day}';
+          setState(() {});
+        }
+      });
+    }
+
     return Scaffold(
-      body: Container(
-        width: double.infinity,
-        height: double.infinity,
+      body: SizedBox(
+        width: width,
+        height: height,
         child: SingleChildScrollView(
           child: SizedBox(
-            height: heightTela,
+            height: height,
             child: Padding(
               padding: const EdgeInsets.all(16),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  Container(height: heightTela * .01),
+                  Container(height: height * .01),
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -60,32 +81,50 @@ class _EsqueceuSenhaState extends State<EsqueceuSenha> {
                     ),
                   ),
                   Form(
+                    key: _formKey,
                     child: Column(
                       children: [
                         TextFormField(
                           keyboardType: TextInputType.emailAddress,
+                          onChanged: (value) => email = value,
+                          validator: (value) =>
+                              FormLoginController.validarLogin(email),
                           decoration: InputDecoration(
-                            border: const OutlineInputBorder(),
-                            label: const Text('Email'),
-                            focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: Cores.azul),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
                             ),
+                            prefixIcon: const Icon(Icons.email_outlined),
+                            label: const Text('E-mail'),
                           ),
-                          cursorColor: Cores.azul,
                         ),
-                        Container(height: 15),
-                        TextFormField(
-                          keyboardType: TextInputType.visiblePassword,
-                          decoration: InputDecoration(
-                            border: const OutlineInputBorder(),
-                            label: const Text(
-                              'Data de nascimento',
+                        Container(height: height * .02),
+                        GestureDetector(
+                          onTap: () => gerarCalendario(),
+                          child: Container(
+                            width: width,
+                            height: 60,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              border: Border.all(color: Colors.grey),
                             ),
-                            focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: Cores.azul),
+                            child: Padding(
+                              padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    nascimento,
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      color: Colors.grey,
+                                    ),
+                                  ),
+                                  const Icon((Icons.calendar_month_outlined)),
+                                ],
+                              ),
                             ),
                           ),
-                          cursorColor: Cores.azul,
                         ),
                       ],
                     ),
@@ -93,7 +132,10 @@ class _EsqueceuSenhaState extends State<EsqueceuSenha> {
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Cores.preto,
-                      fixedSize: Size(widthTela, 64),
+                      fixedSize: Size(width, 50),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
                     ),
                     onPressed: () => Navigator.pushNamed(context, '/novaSenha'),
                     child: Text(
@@ -109,7 +151,7 @@ class _EsqueceuSenhaState extends State<EsqueceuSenha> {
                     height: 125,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(8),
-                      color: Cores.cinzaLinha,
+                      color: Cores.cinza,
                     ),
                     child: const Center(
                       child: Padding(

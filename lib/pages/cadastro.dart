@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:ortoclinica/controllers/cadastro_controller.dart';
-import 'package:ortoclinica/controllers/form_controller.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:ortoclinica/controllers/cadastro.dart';
+import 'package:ortoclinica/controllers/form.dart';
 import 'package:ortoclinica/styles/cores.dart';
 import 'package:ortoclinica/widgets/botao_entrar_com.dart';
 import 'package:ortoclinica/widgets/linha.dart';
 
-import '../widgets/mensagem_toast.dart';
+import '../widgets/toast.dart';
 
 class Cadastro extends StatefulWidget {
   const Cadastro({super.key});
@@ -15,63 +16,67 @@ class Cadastro extends StatefulWidget {
 }
 
 class _CadastroState extends State<Cadastro> {
-  final TextEditingController _controller = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
 
-  bool esconderSenha = true;
-  bool esconderConfirmarSenha = true;
-  Icon iconeSenha = const Icon(Icons.visibility_outlined);
-  Icon iconeConfirmarSenha = const Icon(Icons.visibility_outlined);
+  bool obscureText1 = true;
+  bool obscureText2 = true;
 
   String nome = '';
   String email = '';
   String senha = '';
   String confirmarSenha = '';
-  String dt_nascimento = '';
+  String nascimento = 'Data de nascimento';
 
-  final _formKey = GlobalKey<FormState>();
-
-  void funcaoEsconderConfirmarSenha() {
-    setState(() {
-      if (esconderConfirmarSenha) {
-        esconderConfirmarSenha = false;
-        iconeConfirmarSenha = const Icon(Icons.visibility_off_outlined);
-      } else {
-        esconderConfirmarSenha = true;
-        iconeConfirmarSenha = const Icon(Icons.visibility_outlined);
+  void cadastrar() async {
+    if (_formKey.currentState!.validate()) {
+      if (nascimento != 'Data de nascimento') {
+        await CadastroController.cadastrar(
+          nome,
+          email,
+          senha,
+          nascimento,
+          context,
+        );
       }
-    });
-  }
-
-  void funcaoEsconderSenha() {
-    setState(() {
-      if (esconderSenha) {
-        esconderSenha = false;
-        iconeSenha = const Icon(Icons.visibility_off_outlined);
-      } else {
-        esconderSenha = true;
-        iconeSenha = const Icon(Icons.visibility_outlined);
-      }
-    });
+      MyToast.gerarToast('Preencha todos os campos');
+    } else {
+      MyToast.gerarToast('Preencha todos os campos corretamente');
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    double widthTela = MediaQuery.of(context).size.width;
-    double heightTela = MediaQuery.of(context).size.height;
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
+
+    gerarCalendario() {
+      showDatePicker(
+        context: context,
+        firstDate: DateTime(1900),
+        lastDate: DateTime.now(),
+        initialDate: DateTime.now(),
+      ).then((value) {
+        if (value != null) {
+          nascimento = '${value.year}-${value.month}-${value.day}';
+          setState(() {});
+        }
+      });
+    }
+
     return Scaffold(
       body: SizedBox(
         width: double.infinity,
         height: double.infinity,
         child: SingleChildScrollView(
           child: SizedBox(
-            width: heightTela,
-            height: heightTela,
+            width: width,
+            height: height,
             child: Padding(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(20),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  Container(height: heightTela * .02),
+                  Container(height: height * .02),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -115,126 +120,116 @@ class _CadastroState extends State<Cadastro> {
                           validator: (value) =>
                               FormCadastroController.validarNome(nome),
                           decoration: InputDecoration(
-                            border: const OutlineInputBorder(),
-                            label: const Text('Nome completo'),
-                            focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: Cores.azul),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
                             ),
+                            label: const Text('Nome'),
                           ),
-                          cursorColor: Cores.azul,
                         ),
-                        Container(height: 15),
+                        Container(height: height * .02),
                         TextFormField(
                           keyboardType: TextInputType.emailAddress,
                           onChanged: (value) => email = value,
                           validator: (value) =>
                               FormCadastroController.validarEmail(email),
                           decoration: InputDecoration(
-                            border: const OutlineInputBorder(),
-                            label: const Text('Email'),
-                            focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: Cores.azul),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
                             ),
+                            label: const Text('Email'),
                           ),
-                          cursorColor: Cores.azul,
                         ),
-                        Container(height: 15),
-                        TextFormField(
-                          controller: _controller,
-                          keyboardType: TextInputType.text,
-                          onChanged: (value) => dt_nascimento = value,
-                          validator: (value) =>
-                              FormCadastroController.validarDataNascimento(
-                                  dt_nascimento),
-                          decoration: InputDecoration(
-                            border: const OutlineInputBorder(),
-                            label: const Text('Data de nascimento'),
-                            suffixIcon: IconButton(
-                              icon: const Icon(Icons.calendar_month),
-                              onPressed: () => showDatePicker(
-                                context: context,
-                                initialDate: DateTime.now(),
-                                firstDate: DateTime(1900),
-                                lastDate: DateTime.now(),
-                              ).then(
-                                (value) => _controller.text =
-                                    value.toString().split(' ').first,
+                        Container(height: height * .02),
+                        GestureDetector(
+                          onTap: () => gerarCalendario(),
+                          child: Container(
+                            width: width,
+                            height: 60,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              border: Border.all(color: Colors.grey),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    nascimento,
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      color: Colors.grey,
+                                    ),
+                                  ),
+                                  const Icon((Icons.calendar_month_outlined)),
+                                ],
                               ),
                             ),
-                            focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: Cores.azul),
-                            ),
-                            focusColor: Cores.azul,
                           ),
-                          cursorColor: Cores.azul,
                         ),
-                        Container(height: 15),
+                        Container(height: height * .02),
                         TextFormField(
                           keyboardType: TextInputType.visiblePassword,
                           onChanged: (value) => senha = value,
                           validator: (value) =>
                               FormCadastroController.validarSenha(senha),
-                          obscureText: esconderSenha,
+                          obscureText: obscureText1,
                           decoration: InputDecoration(
-                            border: const OutlineInputBorder(),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
                             suffixIcon: IconButton(
-                              onPressed: () => funcaoEsconderSenha(),
-                              icon: iconeSenha,
+                              onPressed: () => setState(() {
+                                obscureText1 = !obscureText1;
+                              }),
+                              icon: Icon(
+                                obscureText1
+                                    ? Icons.visibility_outlined
+                                    : Icons.visibility_off_outlined,
+                              ),
                             ),
                             label: const Text('Senha'),
-                            focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: Cores.azul),
-                            ),
                           ),
-                          cursorColor: Cores.azul,
                         ),
-                        Container(height: 15),
+                        Container(height: height * .02),
                         TextFormField(
                           keyboardType: TextInputType.visiblePassword,
                           onChanged: (value) => confirmarSenha = value,
                           validator: (value) =>
                               FormCadastroController.validarConfirmarSenha(
-                            value,
+                            confirmarSenha,
                             senha,
                           ),
-                          obscureText: esconderConfirmarSenha,
+                          obscureText: obscureText2,
                           decoration: InputDecoration(
-                            border: const OutlineInputBorder(),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
                             suffixIcon: IconButton(
-                              onPressed: () => funcaoEsconderConfirmarSenha(),
-                              icon: iconeConfirmarSenha,
+                              onPressed: () => setState(() {
+                                obscureText2 = !obscureText2;
+                              }),
+                              icon: Icon(
+                                obscureText2
+                                    ? Icons.visibility_outlined
+                                    : Icons.visibility_off_outlined,
+                              ),
                             ),
                             label: const Text('Confirmar senha'),
-                            focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: Cores.azul),
-                            ),
                           ),
-                          cursorColor: Cores.azul,
                         ),
                       ],
                     ),
                   ),
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Cores.azul,
-                      fixedSize: Size(widthTela, 64),
-                    ),
-                    onPressed: () async {
-                      if (_formKey.currentState!.validate()) {
-                        final res = await CadastroController.cadastrar(
-                          nome,
-                          email,
-                          senha,
-                          dt_nascimento,
-                        );
-                        if (res == 'Usuário Cadastrado com Sucesso!') {
-                          MensagemToast.gerarToast(res);
-                          Navigator.pushNamed(context, '/login');
-                        } else {
-                          MensagemToast.gerarToast(res);
-                        }
-                      }
-                    },
+                        backgroundColor: Cores.azul,
+                        fixedSize: Size(width, 50),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        )),
+                    onPressed: () => cadastrar(),
                     child: Text(
                       'Cadastrar',
                       style: TextStyle(
@@ -253,15 +248,19 @@ class _CadastroState extends State<Cadastro> {
                           Linha(),
                         ],
                       ),
-                      Container(
-                        height: 15,
-                      ),
+                      Container(height: height * .02),
                       const Row(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
-                          BotaoEntrarCom(icone: Icon(Icons.facebook)),
-                          BotaoEntrarCom(icone: Icon(Icons.email)),
-                          BotaoEntrarCom(icone: Icon(Icons.apple)),
+                          BotaoEntrarCom(
+                            icone: FaIcon(FontAwesomeIcons.facebook),
+                          ),
+                          BotaoEntrarCom(
+                            icone: FaIcon(FontAwesomeIcons.google),
+                          ),
+                          BotaoEntrarCom(
+                            icone: FaIcon(FontAwesomeIcons.twitter),
+                          ),
                         ],
                       ),
                     ],
@@ -271,13 +270,8 @@ class _CadastroState extends State<Cadastro> {
                     children: [
                       const Text('Já possui conta?'),
                       TextButton(
-                        onPressed: () {
-                          Navigator.pushNamed(context, '/login');
-                        },
-                        child: Text(
-                          'Entre agora',
-                          style: TextStyle(color: Cores.azul),
-                        ),
+                        onPressed: () => Navigator.pushNamed(context, '/login'),
+                        child: const Text('Entre agora'),
                       ),
                     ],
                   ),

@@ -1,4 +1,5 @@
 class FormCadastroController {
+  
   static validarNome(String value) {
     if (value.isEmpty) {
       return 'Campo obrigatório';
@@ -74,13 +75,6 @@ class FormCadastroController {
     return null;
   }
 
-  static validarDataNascimento(String value) {
-    if (value.isEmpty) {
-      return 'Campo obrigatório';
-    }
-    return null;
-  }
-
   static validarSenha(String value) {
     int minusculo = 0;
     int maiusculo = 0;
@@ -130,6 +124,7 @@ class FormCadastroController {
     }
     return null;
   }
+
 }
 
 class FormLoginController {

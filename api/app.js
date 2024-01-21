@@ -38,7 +38,7 @@ app.use('/assets', express.static('./assets'));
 app.use('/ortoclinica/usuarios', usuarioRoute);
 
 // routes TP04
-app.use('/ortoclinica/produtos', medicosRoute);
+app.use('/ortoclinica/medicos', medicosRoute);
 
 app.use((req, res, next) => {
     const error = new Error('Not found...');

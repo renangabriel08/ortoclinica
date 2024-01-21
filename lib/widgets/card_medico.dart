@@ -72,7 +72,9 @@ class _CardMedicoState extends State<CardMedico> {
                       size: 20,
                     ),
                     Text(
-                      widget.nota,
+                      widget.nota.length == 1
+                          ? '${widget.nota}.0'
+                          : widget.nota,
                       style: const TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.w500,
@@ -86,7 +88,7 @@ class _CardMedicoState extends State<CardMedico> {
           ),
           ClipRRect(
             borderRadius: BorderRadius.circular(999),
-            child: Image.asset(
+            child: Image.network(
               widget.img,
               width: 54,
               height: 54,
@@ -99,7 +101,7 @@ class _CardMedicoState extends State<CardMedico> {
                 style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w500,
-                  color: Cores.tituloPopUp,
+                  color: Cores.cinza,
                 ),
               ),
               Row(

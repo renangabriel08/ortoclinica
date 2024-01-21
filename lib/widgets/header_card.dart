@@ -32,12 +32,12 @@ class HeaderCard extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 12,
                           fontWeight: FontWeight.w300,
-                          color: Cores.textoPopUp,
+                          color: Cores.cinza,
                         ),
                       ),
                       Icon(
                         Icons.arrow_forward_ios_rounded,
-                        color: Cores.textoPopUp,
+                        color: Cores.cinza,
                         size: 10,
                       ),
                     ],

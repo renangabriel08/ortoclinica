@@ -3,7 +3,7 @@ import 'package:ortoclinica/styles/cores.dart';
 
 class BotaoEntrarCom extends StatelessWidget {
   const BotaoEntrarCom({super.key, required this.icone});
-  final Icon icone;
+  final icone;
 
   @override
   Widget build(BuildContext context) {
@@ -12,7 +12,7 @@ class BotaoEntrarCom extends StatelessWidget {
       height: 50,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: Cores.cinzaLinha),
+        border: Border.all(color: Cores.cinza),
       ),
       child: Center(
         child: icone,

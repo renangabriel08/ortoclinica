@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:ortoclinica/pages/agenda.dart';
 import 'package:ortoclinica/pages/cadastro.dart';
 import 'package:ortoclinica/pages/esqueceu_senha.dart';
@@ -9,6 +10,8 @@ import 'package:ortoclinica/pages/splash.dart';
 import 'package:ortoclinica/styles/cores.dart';
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
   runApp(const MyApp());
 }
 
@@ -24,19 +27,20 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      initialRoute: Home.routeName,
       theme: ThemeData(
-        primarySwatch: Cores.customSwatch,
+        colorScheme: ColorScheme.fromSeed(seedColor: Cores.azul),
+        useMaterial3: true,
       ),
       routes: {
         '/splash': (context) => const Splash(),
         '/login': (context) => const Login(),
         '/cadastro': (context) => const Cadastro(),
-        Home.routeName: (context) => const Home(),
+        '/home': (context) => const Home(),
         '/esqueceuSenha': (context) => const EsqueceuSenha(),
         '/novaSenha': (context) => const NovaSenha(),
         '/agenda': (context) => const Agenda(),
       },
+      initialRoute: '/login',
     );
   }
 }

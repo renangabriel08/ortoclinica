@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:ortoclinica/controllers/form_controller.dart';
-import 'package:ortoclinica/controllers/login_controller.dart';
-import 'package:ortoclinica/controllers/shared_preferences_controller.dart';
-import 'package:ortoclinica/pages/home.dart';
+import 'package:ortoclinica/controllers/form.dart';
+import 'package:ortoclinica/controllers/login.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:ortoclinica/styles/cores.dart';
 import 'package:ortoclinica/widgets/botao_entrar_com.dart';
 import 'package:ortoclinica/widgets/linha.dart';
-import 'package:ortoclinica/widgets/mensagem_toast.dart';
+import 'package:ortoclinica/widgets/toast.dart';
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -17,29 +16,23 @@ class Login extends StatefulWidget {
 
 class _LoginState extends State<Login> {
   final _formKey = GlobalKey<FormState>();
+  bool obscureText = true;
 
-  bool esconderSenha = true;
-  Icon iconeSenha = const Icon(Icons.visibility_outlined);
+  String email = '';
+  String senha = '';
 
-  void funcaoEsconderSenha() {
-    setState(() {
-      if (esconderSenha) {
-        esconderSenha = false;
-        iconeSenha = const Icon(Icons.visibility_off_outlined);
-      } else {
-        esconderSenha = true;
-        iconeSenha = const Icon(Icons.visibility_outlined);
-      }
-    });
+  logar() async {
+    if (_formKey.currentState!.validate()) {
+      LoginController.logar(email, senha, context);
+    } else {
+      MyToast.gerarToast('Preencha todos os campos');
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    double widthTela = MediaQuery.of(context).size.width;
-    double heightTela = MediaQuery.of(context).size.height;
-
-    String email = '';
-    String senha = '';
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
 
     return Scaffold(
       body: SizedBox(
@@ -47,14 +40,15 @@ class _LoginState extends State<Login> {
         height: double.infinity,
         child: SingleChildScrollView(
           child: SizedBox(
-            width: widthTela,
-            height: heightTela,
+            width: width,
+            height: height,
             child: Padding(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(20),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  Container(height: heightTela * .08),
+                  Container(height: height * .08),
+                  //Header
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -88,6 +82,8 @@ class _LoginState extends State<Login> {
                       ),
                     ],
                   ),
+
+                  //Form
                   Form(
                     key: _formKey,
                     child: Column(
@@ -96,35 +92,39 @@ class _LoginState extends State<Login> {
                           keyboardType: TextInputType.emailAddress,
                           onChanged: (value) => email = value,
                           validator: (value) =>
-                              FormLoginController.validarLogin(value),
+                              FormLoginController.validarLogin(email),
                           decoration: InputDecoration(
-                            border: const OutlineInputBorder(),
-                            label: const Text('E-mail'),
-                            focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: Cores.azul),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
                             ),
+                            prefixIcon: const Icon(Icons.email_outlined),
+                            label: const Text('E-mail'),
                           ),
-                          cursorColor: Cores.azul,
                         ),
-                        Container(height: 15),
+                        Container(height: height * .02),
                         TextFormField(
+                          obscureText: obscureText,
                           keyboardType: TextInputType.visiblePassword,
                           onChanged: (value) => senha = value,
                           validator: (value) =>
-                              FormLoginController.validarLogin(value),
-                          obscureText: esconderSenha,
+                              FormLoginController.validarLogin(senha),
                           decoration: InputDecoration(
-                            border: const OutlineInputBorder(),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            prefixIcon: const Icon(Icons.lock_outline),
                             suffixIcon: IconButton(
-                              onPressed: () => funcaoEsconderSenha(),
-                              icon: iconeSenha,
+                              onPressed: () => setState(() {
+                                obscureText = !obscureText;
+                              }),
+                              icon: Icon(
+                                obscureText
+                                    ? Icons.visibility_outlined
+                                    : Icons.visibility_off_outlined,
+                              ),
                             ),
                             label: const Text('Senha'),
-                            focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: Cores.azul),
-                            ),
                           ),
-                          cursorColor: Cores.azul,
                         ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.end,
@@ -135,12 +135,7 @@ class _LoginState extends State<Login> {
                                 context,
                                 '/esqueceuSenha',
                               ),
-                              child: Text(
-                                'Esqueceu a senha?',
-                                style: TextStyle(
-                                  color: Cores.cinzaTexto,
-                                ),
-                              ),
+                              child: const Text('Esqueceu a senha?'),
                             ),
                           ],
                         )
@@ -150,27 +145,12 @@ class _LoginState extends State<Login> {
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Cores.azul,
-                      fixedSize: Size(widthTela, 64),
+                      fixedSize: Size(width, 50),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
                     ),
-                    onPressed: () async {
-                      if (_formKey.currentState!.validate()) {
-                        final res = await LoginController.logar(email, senha);
-                        if (res[0] == 'Autenticado com sucesso') {
-                          SharedPreferencesController.salvarLogado(
-                            res[1],
-                            res[2],
-                          );
-                          MensagemToast.gerarToast(res[0]);
-                          Navigator.pushNamed(
-                            context,
-                            Home.routeName,
-                            arguments: DadosUserLogado(res[2], res[1]),
-                          );
-                        } else {
-                          MensagemToast.gerarToast(res[0]);
-                        }
-                      }
-                    },
+                    onPressed: () => logar(),
                     child: Text(
                       'Entrar',
                       style: TextStyle(
@@ -195,9 +175,15 @@ class _LoginState extends State<Login> {
                       const Row(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
-                          BotaoEntrarCom(icone: Icon(Icons.facebook)),
-                          BotaoEntrarCom(icone: Icon(Icons.email)),
-                          BotaoEntrarCom(icone: Icon(Icons.apple)),
+                          BotaoEntrarCom(
+                            icone: FaIcon(FontAwesomeIcons.facebook),
+                          ),
+                          BotaoEntrarCom(
+                            icone: FaIcon(FontAwesomeIcons.google),
+                          ),
+                          BotaoEntrarCom(
+                            icone: FaIcon(FontAwesomeIcons.twitter),
+                          ),
                         ],
                       ),
                     ],
@@ -207,13 +193,11 @@ class _LoginState extends State<Login> {
                     children: [
                       const Text('Não possui conta?'),
                       TextButton(
-                        onPressed: () {
-                          Navigator.pushNamed(context, '/cadastro');
-                        },
-                        child: Text(
-                          'Registre-se',
-                          style: TextStyle(color: Cores.azul),
+                        onPressed: () => Navigator.pushNamed(
+                          context,
+                          '/cadastro',
                         ),
+                        child: const Text('Registre-se'),
                       ),
                     ],
                   ),

@@ -57,7 +57,7 @@ class _NovaSenhaState extends State<NovaSenha> {
                 height: 156,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(999),
-                  color: Cores.azulClaro,
+                  color: Cores.azul,
                 ),
                 child: Center(
                   child: Icon(
@@ -74,7 +74,7 @@ class _NovaSenhaState extends State<NovaSenha> {
                     style: TextStyle(
                       fontSize: 35,
                       fontWeight: FontWeight.w400,
-                      color: Cores.tituloPopUp,
+                      color: Cores.cinza,
                     ),
                   ),
                   const SizedBox(height: 4),
@@ -83,7 +83,7 @@ class _NovaSenhaState extends State<NovaSenha> {
                     style: TextStyle(
                       fontSize: 17,
                       fontWeight: FontWeight.w400,
-                      color: Cores.textoPopUp,
+                      color: Cores.cinza,
                     ),
                     textAlign: TextAlign.center,
                   ),
@@ -114,7 +114,7 @@ class _NovaSenhaState extends State<NovaSenha> {
                       style: TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.w400,
-                        color: Cores.cinzaTexto,
+                        color: Cores.cinza,
                       ),
                     ),
                   ),
